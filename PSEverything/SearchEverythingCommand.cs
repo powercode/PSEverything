@@ -7,6 +7,7 @@ namespace PSEverything
 {
     [Cmdlet(VerbsCommon.Search, "Everything", SupportsPaging = true, DefaultParameterSetName = "default")]
     [OutputType(typeof(string))]
+    [Alias("se")]
     public class SearchEverythingCommand : PSCmdlet
     {
         [Parameter(ParameterSetName = "default")]        
