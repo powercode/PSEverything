@@ -68,6 +68,14 @@ namespace PSEverything
                 NativeMethods32.Everything_SetMax(count);
         }
 
+        public static void SetOffset(int index)
+        {
+            if (Is64Bit)
+                NativeMethods64.Everything_SetOffset(index);
+            else
+                NativeMethods32.Everything_SetOffset(index);
+        }
+
         public static void SortResultsByPath()
         {
             if (Is64Bit)
@@ -95,6 +103,11 @@ namespace PSEverything
         public static int GetNumberOfFolderResults()
         {
             return Is64Bit ? NativeMethods64.Everything_GetNumFolderResults() : NativeMethods32.Everything_GetNumFolderResults();
+        }
+
+        public static int GetTotalNumberOfResults()
+        {
+            return Is64Bit ? NativeMethods64.Everything_GetTotResults() : NativeMethods32.Everything_GetTotResults();
         }
 
         public static string GetFullPathName(int index, StringBuilder buf)
@@ -140,5 +153,12 @@ namespace PSEverything
         }
 
 
-            }
+        public static void Reset()
+        {
+            if (Is64Bit)
+                NativeMethods64.Everything_Reset();
+            else
+                NativeMethods32.Everything_Reset();
+        }
+    }
 }

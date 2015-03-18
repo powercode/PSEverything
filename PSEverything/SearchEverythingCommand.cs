@@ -1,114 +1,226 @@
 ﻿using System;
+using System.Linq;
 using System.Management.Automation;
 using System.Text;
 
 namespace PSEverything
 {
-    [Cmdlet(VerbsCommon.Search, "Everything", DefaultParameterSetName = "Filter")]
+    [Cmdlet(VerbsCommon.Search, "Everything", SupportsPaging = true, DefaultParameterSetName = "default")]
     [OutputType(typeof(string))]
     public class SearchEverythingCommand : PSCmdlet
     {
-        [Parameter(Position = 1, ParameterSetName = "Pattern")]
-        public string Pattern { get; set; }
+        [Parameter(ParameterSetName = "default")]        
+        public string QueryFilter { get; set; }
 
-        [Parameter(ParameterSetName = "Filter", Position = 1)]
-        public string[] FilePattern { get; set; }
+        [Parameter(ParameterSetName = "default", Position = 1)]        
+        public string[] Include { get; set; }
+        
+        [Parameter(ParameterSetName = "default")]        
+        public string[] Exclude { get; set; }
 
-        [Parameter(ParameterSetName = "Filter", Position = 2)]
+        [Parameter(ParameterSetName = "default")]        
         public string[] Extention { get; set; }
 
-        [Parameter(ParameterSetName = "Filter")]
-        public string[] PathFilter { get; set; }
+        [Parameter(ParameterSetName = "default")]        
+        public string[] PathInclude { get; set; }
 
-        [Parameter(ParameterSetName = "Folder")]
-        public string[] Folder { get; set; }
+        [Parameter(ParameterSetName = "default")]        
+        public string[] PathExclude { get; set; }
 
-        [Alias("Regex")]
-        [Parameter]
-        public SwitchParameter RegularExpression { get; set; }
+        [Parameter(ParameterSetName = "default")]        
+        public string[] FolderInclude { get; set; }
+
+        [Parameter(ParameterSetName = "default")]        
+        public string[] FolderExclude { get; set; }
+
+        [Parameter(ParameterSetName = "default")]        
+        public int ParentCount { get; set; }
+
+        [Parameter(ParameterSetName = "default")]        
+        public string ChildFileName { get; set; }
+        
+        [ValidateCount(1, 2)]
+        [Parameter(ParameterSetName = "default")]        
+        public int[] NameLength { get; set; }
+        
+        [ValidateCount(1,2)]
+        [Parameter(ParameterSetName = "default")]        
+        public long[] Size { get; set; }
+        
+        [Parameter(ParameterSetName = "regex")]
+        public string RegularExpression { get; set; }
+        
         [Parameter]
         public SwitchParameter CaseSensitive { get; set; }
-        [Parameter]
+        
+        [Parameter(ParameterSetName = "default")]        
         public SwitchParameter MatchWholeWord { get; set; }
-        [Parameter]
-        public SwitchParameter Directory { get; set; }
-
-        [Parameter]
-        public int Count { get; set; }
-
-        public string GetSearchString()
+        
+        private string GetSearchString()
         {
+            if (ParameterSetName == "regex") { return RegularExpression; }
 
             var sb = new StringBuilder();
-            if (ParameterSetName == "Filter")
-            {
-                if (Extention != null)
-                {
-                    sb.Append("ext:");
-                    foreach (var ext in Extention)
-                    {
-                        sb.Append(ext);
-                        sb.Append(';');
-                    }
-                    sb[sb.Length - 1] = ' ';
-                }
-                if (PathFilter != null)
-                {
-                    sb.Append("path:");
-                    foreach (var fld in PathFilter)
-                    {
-                        sb.Append(fld);
-                        sb.Append(';');
-                    }
-                    sb[sb.Length - 1] = ' ';
-                }
-                if (FilePattern != null)
-                {
-                    sb.Append("file:");
-                    foreach (var file in FilePattern)
-                    {
-                        sb.Append(file);
-                        sb.Append(';');
-                    }
-                    sb[sb.Length - 1] = ' ';
-                }
-            }
-            else if (ParameterSetName == "Pattern")
-            {
-                sb.Append(Pattern);
-            }
-
-            else
-            {
-                sb.Append("folder:");
-                foreach (var folder in Folder)
-                {
-                    sb.Append(folder);
-                    sb.Append(';');
-                }
-                sb[sb.Length - 1] = ' ';
-
-            }
+            AddPathFilter(sb);
+            AddFileFilter(sb);
+            AddFolderFilter(sb);
+            AddPatternFilter(sb);                        
+            AddParentCountFilter(sb);
+            AddExtensionFilter(sb);
+            AddChildFilter(sb);
+            AddSizeFilter(sb);
+            AddNameLengthFilter(sb);
             return sb.ToString();
         }
 
+        private void AddPatternFilter(StringBuilder searchBuilder)
+        {
+            if (!String.IsNullOrEmpty(QueryFilter))
+            {
+                searchBuilder.Append(QueryFilter);
+            }
+        }
+
+        private static void AddListFilter(StringBuilder searchBuilder, string filterName, string[] include, string[] exclude = null, char separator = ' ')
+        {
+            if (include == null && exclude == null) return;
+            searchBuilder.Append(' ');
+            if (include != null)
+            {                
+                foreach (var item in include)
+                {                    
+                    searchBuilder.Append(filterName);
+                    searchBuilder.Append(item);
+                    searchBuilder.Append(separator);
+                }                
+                
+            }
+            if (exclude != null)
+            {
+                foreach (var item in exclude)
+                {
+                    searchBuilder.Append(filterName);
+                    searchBuilder.Append('!');
+                    searchBuilder.Append(item);
+                    searchBuilder.Append(separator);
+                }
+            }
+            searchBuilder.Length--;
+        }
+        
+        private void AddPathFilter(StringBuilder searchBuilder)
+        {
+            AddListFilter(searchBuilder, "path:", PathInclude, PathExclude);                    
+        }
+
+        void AddFileFilter(StringBuilder searchBuilder)
+        {
+            AddListFilter(searchBuilder, "file:", Include,Exclude);
+        }
+
+        void AddFolderFilter(StringBuilder searchBuilder)
+        {
+            AddListFilter(searchBuilder, "folder:", FolderInclude, FolderExclude);
+        }
+
+        void AddExtensionFilter(StringBuilder searchBuilder)
+        {
+            AddListFilter(searchBuilder, "ext:", Extention, null, ';');
+        }
+
+        void AddParentCountFilter(StringBuilder searchBuilder)
+        {
+            if (MyInvocation.BoundParameters.ContainsKey("ParentCount"))
+            {
+                searchBuilder.Append(" parents:");
+                searchBuilder.Append(ParentCount);
+            }
+        }
+
+        void AddChildFilter(StringBuilder searchBuilder)
+        {
+            if (!String.IsNullOrEmpty(ChildFileName))
+            {
+                searchBuilder.Append(" child:");
+                searchBuilder.Append(ChildFileName);
+            }
+        }
+      
+        void AddSizeFilter(StringBuilder searchBuilder)
+        {
+            if (Size != null)
+            {
+                if (Size.Length == 1)
+                {
+                    searchBuilder.Append(" size:");
+                    searchBuilder.Append(Size[0]);
+                }
+                else
+                {
+                    searchBuilder.Append(" size:");
+                    searchBuilder.Append(Size[0]);
+                    searchBuilder.Append("..");
+                    searchBuilder.Append(Size[1]);
+                }
+            }
+        }
+
+        void AddNameLengthFilter(StringBuilder searchBuilder)
+        {
+            if (NameLength != null)
+            {
+                if (NameLength.Length == 1)
+                {
+                    searchBuilder.Append(" len:");
+                    searchBuilder.Append(NameLength[0]);
+                }
+                else
+                {
+                    searchBuilder.Append(" len:");
+                    searchBuilder.Append(NameLength[0]);
+                    searchBuilder.Append("..");
+                    searchBuilder.Append(NameLength[1]);
+                }
+            }
+        }
         protected override void ProcessRecord()
         {
+            
             Everything.SetMatchCase(CaseSensitive);
             Everything.SetMatchWholeWord(MatchWholeWord);
-            Everything.SetRegEx(RegularExpression);
-            Everything.SetMatchPath(Directory);
+            Everything.SetRegEx(!String.IsNullOrEmpty(RegularExpression));            
+                        
+            ulong skip = PagingParameters.Skip;            
+            if (skip > Int32.MaxValue)
+            {
+                ThrowTerminatingError(new ErrorRecord(new ArgumentException("Cannot skip that many results"),"SkipToLarge", ErrorCategory.InvalidArgument, skip));
+            }            
 
-            Everything.SetMax(MyInvocation.BoundParameters.ContainsKey("Count") ? Count : Int32.MaxValue);
+            ulong first = PagingParameters.First;
+
+            if (first == ulong.MaxValue)
+            {
+                first = Int32.MaxValue;
+            }
+            if (first > Int32.MaxValue)
+            {
+                ThrowTerminatingError(new ErrorRecord(new ArgumentException("Cannot take that many results"), "FirstToLarge", ErrorCategory.InvalidArgument, first));
+            }                        
+
             var searchPattern = GetSearchString();
-            WriteDebug(searchPattern);
+            WriteDebug("Search-Everything search pattern:" + searchPattern);
             Everything.SetSearch(searchPattern);
+
             Everything.Query(true);
-            Everything.SortResultsByPath();
-            foreach (var path in Everything.GetAllResults())
+            if (PagingParameters.IncludeTotalCount)
+            {
+                var total = PagingParameters.NewTotalCount((ulong) Everything.GetTotalNumberOfResults(), 1.0);
+                WriteObject(total);
+            }
+            foreach (var path in Everything.GetAllResults().OrderBy(s => s).Skip((int)skip).Take((int)first))            
             {
                 WriteObject(path);
-            }
+            }            
 
         }
     }
