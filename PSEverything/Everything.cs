@@ -120,15 +120,18 @@ namespace PSEverything
             return buf.ToString();
         }
 
-        public static IEnumerable<string> GetAllResults()
+        public static string[] GetAllResults(int count)
         {
+            var retVal = new string[count];
             var buf = new StringBuilder(260);
-            var resCount = GetNumberOfResults();
-            for (int i = 0; i < resCount; ++i)
+            
+            for (int i = 0; i < count ; ++i)
             {
-                yield return GetFullPathName(i, buf);
+                var path = GetFullPathName(i, buf);
+                retVal[i] = path;
                 buf.Clear();
             }
+            return retVal;
         }
 
         static void Throw(int errorCode)

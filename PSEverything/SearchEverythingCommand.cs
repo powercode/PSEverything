@@ -126,7 +126,15 @@ namespace PSEverything
 
         void AddExtensionFilter(StringBuilder searchBuilder)
         {
-            AddListFilter(searchBuilder, "ext:", Extension, null, ';');
+            if (Extension == null) return;
+            searchBuilder.Append(" ext:");
+            
+            foreach (var item in Extension)
+            {                
+                searchBuilder.Append(item);
+                searchBuilder.Append(";");
+            }
+            searchBuilder.Length--;
         }
 
         void AddParentCountFilter(StringBuilder searchBuilder)
@@ -213,15 +221,25 @@ namespace PSEverything
             Everything.SetSearch(searchPattern);
 
             Everything.Query(true);
+            int resCount = Everything.GetTotalNumberOfResults();
             if (PagingParameters.IncludeTotalCount)
             {
-                var total = PagingParameters.NewTotalCount((ulong) Everything.GetTotalNumberOfResults(), 1.0);
+                var total = PagingParameters.NewTotalCount((ulong) resCount , 1.0);
                 WriteObject(total);
             }
-            foreach (var path in Everything.GetAllResults().OrderBy(s => s).Skip((int)skip).Take((int)first))            
+            var res = Everything.GetAllResults(resCount);
+            Array.Sort(res);
+            if (skip == 0 && first == Int32.MaxValue)
             {
-                WriteObject(path);
-            }            
+                WriteObject(res, enumerateCollection:true);
+            }
+            else 
+            { 
+                foreach (var path in res.Skip((int)skip).Take((int)first))            
+                {
+                    WriteObject(path);
+                }
+            }
 
         }
     }
