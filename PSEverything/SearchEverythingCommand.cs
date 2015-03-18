@@ -19,7 +19,7 @@ namespace PSEverything
         public string[] Exclude { get; set; }
 
         [Parameter(ParameterSetName = "default")]        
-        public string[] Extention { get; set; }
+        public string[] Extension { get; set; }
 
         [Parameter(ParameterSetName = "default")]        
         public string[] PathInclude { get; set; }
@@ -125,7 +125,7 @@ namespace PSEverything
 
         void AddExtensionFilter(StringBuilder searchBuilder)
         {
-            AddListFilter(searchBuilder, "ext:", Extention, null, ';');
+            AddListFilter(searchBuilder, "ext:", Extension, null, ';');
         }
 
         void AddParentCountFilter(StringBuilder searchBuilder)
