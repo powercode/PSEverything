@@ -47,17 +47,35 @@
     <Compile Include="SearchEverythingCommand.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="PSEverything.dll-Help.xml" />
+    <Content Include="PSEverything.dll-Help.xml">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="PSEverything.psd1" />
+    <Content Include="PSEverything.psd1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="..\LICENSE">
+      <Link>LICENSE</Link>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
-  <Target Name="AfterBuild">
-  </Target>
+  
   -->
+  <Target Name="AfterBuild">
+    <ItemGroup>
+      <ModuleFiles Include="$(TargetPath)" />
+      <ModuleFiles Include="@(Content)" />
+      <ModuleFiles Include="dll\Everything*.dll" />
+    </ItemGroup>
+    <PropertyGroup>
+      <ModuleDir>$(TargetDir)\PSEverything</ModuleDir>
+    </PropertyGroup>
+    <MakeDir Directories="$(ModuleDir)" />
+    <Copy SourceFiles="@(ModuleFiles)" DestinationFolder="$(ModuleDir)" SkipUnchangedFiles="true" />
+  </Target>
 </Project>

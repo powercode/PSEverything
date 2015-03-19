@@ -11,7 +11,7 @@ namespace PSEverything
     public class SearchEverythingCommand : PSCmdlet
     {
         [Parameter(ParameterSetName = "default")]        
-        public string QueryFilter { get; set; }
+        public string Filter { get; set; }
 
         [Parameter(ParameterSetName = "default", Position = 1)]        
         public string[] Include { get; set; }
@@ -22,15 +22,19 @@ namespace PSEverything
         [Parameter(ParameterSetName = "default")]        
         public string[] Extension { get; set; }
 
+        [Alias("pi")]
         [Parameter(ParameterSetName = "default")]        
         public string[] PathInclude { get; set; }
 
+        [Alias("pe")]
         [Parameter(ParameterSetName = "default")]        
         public string[] PathExclude { get; set; }
 
+        [Alias("fi")]
         [Parameter(ParameterSetName = "default")]        
         public string[] FolderInclude { get; set; }
 
+        [Alias("fe")]
         [Parameter(ParameterSetName = "default")]        
         public string[] FolderExclude { get; set; }
 
@@ -53,7 +57,10 @@ namespace PSEverything
         
         [Parameter]
         public SwitchParameter CaseSensitive { get; set; }
-        
+
+        [Parameter]
+        public SwitchParameter Global { get; set; }
+
         [Parameter(ParameterSetName = "default")]        
         public SwitchParameter MatchWholeWord { get; set; }
         
@@ -76,9 +83,9 @@ namespace PSEverything
 
         private void AddPatternFilter(StringBuilder searchBuilder)
         {
-            if (!String.IsNullOrEmpty(QueryFilter))
+            if (!String.IsNullOrEmpty(Filter))
             {
-                searchBuilder.Append(QueryFilter);
+                searchBuilder.Append(Filter);
             }
         }
 
@@ -111,7 +118,13 @@ namespace PSEverything
         
         private void AddPathFilter(StringBuilder searchBuilder)
         {
-            AddListFilter(searchBuilder, "path:", PathInclude, PathExclude);                    
+            AddListFilter(searchBuilder, "path:", PathInclude, PathExclude);
+            if (!Global)
+            {
+                searchBuilder.Append(" path:");
+                searchBuilder.Append(SessionState.Path.CurrentFileSystemLocation.ProviderPath);
+                searchBuilder.Append('\\');
+            }        
         }
 
         void AddFileFilter(StringBuilder searchBuilder)
