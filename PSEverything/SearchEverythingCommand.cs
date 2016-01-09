@@ -124,8 +124,10 @@ namespace PSEverything
             {
                 searchBuilder.Append(" path:");
                 searchBuilder.Append(SessionState.Path.CurrentFileSystemLocation.ProviderPath);
-                searchBuilder.Append('\\');
-            }        
+				if(!SessionState.Path.CurrentFileSystemLocation.ProviderPath.EndsWith("\\")) {
+					searchBuilder.Append('\\');
+				}
+			}        
         }
 
         void AddFileFilter(StringBuilder searchBuilder)
