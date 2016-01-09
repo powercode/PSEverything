@@ -5,6 +5,12 @@ _Everything_ is a blazingly fast local search engine by David Carpenter, found a
 
 To use it, download Everything and install it as a service.
 
+Install PSEverything from PowerShell Gallery.
+
+```powershell
+Install-Module PSEverything
+```
+
 Then you can so things like
 ```powershell
 Search-Everything -Extension cpp,h -FilePattern Bytes | Get-Item
