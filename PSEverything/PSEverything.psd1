@@ -84,7 +84,7 @@ AliasesToExport = 'se','sles'
 # ModuleList = @()
 
 # List of all files packaged with this module
-# FileList = @()
+FileList = 'Everything32.dll','Everything64.dll','LICENSE','PSEverything.dll','PSEverything.dll-Help.xml','PSEverything.psd1','PSEverything.psm1'
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
