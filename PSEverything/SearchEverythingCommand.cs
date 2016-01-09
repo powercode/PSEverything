@@ -83,7 +83,7 @@ namespace PSEverything
 
         private void AddPatternFilter(StringBuilder searchBuilder)
         {
-            if (!String.IsNullOrEmpty(Filter))
+            if (!string.IsNullOrEmpty(Filter))
             {
                 searchBuilder.Append(' ');
                 searchBuilder.Append(Filter);
@@ -162,7 +162,7 @@ namespace PSEverything
 
         void AddChildFilter(StringBuilder searchBuilder)
         {
-            if (!String.IsNullOrEmpty(ChildFileName))
+            if (!string.IsNullOrEmpty(ChildFileName))
             {
                 searchBuilder.Append(" child:");
                 searchBuilder.Append(ChildFileName);
@@ -211,10 +211,10 @@ namespace PSEverything
             
             Everything.SetMatchCase(CaseSensitive);
             Everything.SetMatchWholeWord(MatchWholeWord);
-            Everything.SetRegEx(!String.IsNullOrEmpty(RegularExpression));            
+            Everything.SetRegEx(!string.IsNullOrEmpty(RegularExpression));            
                         
             ulong skip = PagingParameters.Skip;            
-            if (skip > Int32.MaxValue)
+            if (skip > int.MaxValue)
             {
                 ThrowTerminatingError(new ErrorRecord(new ArgumentException("Cannot skip that many results"),"SkipToLarge", ErrorCategory.InvalidArgument, skip));
             }            
@@ -223,9 +223,9 @@ namespace PSEverything
 
             if (first == ulong.MaxValue)
             {
-                first = Int32.MaxValue;
+                first = int.MaxValue;
             }
-            if (first > Int32.MaxValue)
+            if (first > int.MaxValue)
             {
                 ThrowTerminatingError(new ErrorRecord(new ArgumentException("Cannot take that many results"), "FirstToLarge", ErrorCategory.InvalidArgument, first));
             }                        
@@ -243,7 +243,7 @@ namespace PSEverything
             }
             var res = Everything.GetAllResults(resCount);
             Array.Sort(res);
-            if (skip == 0 && first == Int32.MaxValue)
+            if (skip == 0 && first == int.MaxValue)
             {
                 WriteObject(res, enumerateCollection:true);
             }
