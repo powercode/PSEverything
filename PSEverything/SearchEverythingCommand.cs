@@ -85,6 +85,7 @@ namespace PSEverything
         {
             if (!String.IsNullOrEmpty(Filter))
             {
+                searchBuilder.Append(' ');
                 searchBuilder.Append(Filter);
             }
         }
