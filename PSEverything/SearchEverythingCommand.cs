@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Management.Automation;
 using System.Text;
 
@@ -7,7 +6,8 @@ namespace PSEverything
 {
     [Cmdlet(VerbsCommon.Search, "Everything", SupportsPaging = true, DefaultParameterSetName = "default")]
     [OutputType(typeof(string))]
-    [Alias("se")]
+	[OutputType(typeof(string[]))]
+	[Alias("se")]
     public class SearchEverythingCommand : PSCmdlet
     {
         [Parameter(ParameterSetName = "default")]        
@@ -48,11 +48,12 @@ namespace PSEverything
         [Parameter(ParameterSetName = "default")]        
         public int[] NameLength { get; set; }
         
+		[ArgumentCompleter(typeof(EverythingArgumentCompleter))]
         [ValidateCount(1,2)]
         [Parameter(ParameterSetName = "default")]        
-        public long[] Size { get; set; }
-        
-        [Parameter(ParameterSetName = "regex")]
+        public string[] Size { get; set; }
+		
+		[Parameter(ParameterSetName = "regex")]
         public string RegularExpression { get; set; }
         
         [Parameter]
@@ -63,8 +64,11 @@ namespace PSEverything
 
         [Parameter(ParameterSetName = "default")]        
         public SwitchParameter MatchWholeWord { get; set; }
-        
-        private string GetSearchString()
+
+		[Parameter()]
+		public SwitchParameter AsArray { get; set; }
+
+		private string GetSearchString()
         {
             if (ParameterSetName == "regex") { return RegularExpression; }
 
@@ -216,7 +220,7 @@ namespace PSEverything
             ulong skip = PagingParameters.Skip;            
             if (skip > Int32.MaxValue)
             {
-                ThrowTerminatingError(new ErrorRecord(new ArgumentException("Cannot skip that many results"),"SkipToLarge", ErrorCategory.InvalidArgument, skip));
+                ThrowTerminatingError(new ErrorRecord(new ParameterBindingException("Cannot skip that many results"),"SkipToLarge", ErrorCategory.InvalidArgument, skip));
             }            
 
             ulong first = PagingParameters.First;
@@ -227,8 +231,16 @@ namespace PSEverything
             }
             if (first > Int32.MaxValue)
             {
-                ThrowTerminatingError(new ErrorRecord(new ArgumentException("Cannot take that many results"), "FirstToLarge", ErrorCategory.InvalidArgument, first));
-            }                        
+                ThrowTerminatingError(new ErrorRecord(new ParameterBindingException("Cannot take that many results"), "FirstToLarge", ErrorCategory.InvalidArgument, first));
+            }
+	        if (first < Int32.MaxValue)
+	        {
+		        Everything.SetMax((int)first);
+	        }
+	        if (skip > 0)
+	        {
+		        Everything.SetOffset((int)skip);
+	        }
 
             var searchPattern = GetSearchString();
             WriteDebug("Search-Everything search pattern:" + searchPattern);
@@ -242,19 +254,8 @@ namespace PSEverything
                 WriteObject(total);
             }
             var res = Everything.GetAllResults(resCount);
-            Array.Sort(res);
-            if (skip == 0 && first == Int32.MaxValue)
-            {
-                WriteObject(res, enumerateCollection:true);
-            }
-            else 
-            { 
-                foreach (var path in res.Skip((int)skip).Take((int)first))            
-                {
-                    WriteObject(path);
-                }
-            }
-
+            Array.Sort(res);        			
+            WriteObject(res, enumerateCollection:!AsArray);            
         }
     }
 }
