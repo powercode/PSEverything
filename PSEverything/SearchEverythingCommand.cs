@@ -90,7 +90,22 @@ namespace PSEverything
             }
         }
 
-        private static void AddListFilter(StringBuilder searchBuilder, string filterName, string[] include, string[] exclude = null, char separator = ' ')
+	    private static void AddPath(StringBuilder searchBuilder, string path)
+	    {
+		    if (path.IndexOf(' ') == -1)
+		    {
+			    searchBuilder.Append(path);
+		    }
+		    else
+		    {
+			    searchBuilder.Append('"');
+			    searchBuilder.Append(path);
+				searchBuilder.Append('"');
+			}
+	    }
+
+
+		private static void AddListFilter(StringBuilder searchBuilder, string filterName, string[] include, string[] exclude = null, char separator = ' ')
         {
             if (include == null && exclude == null) return;
             searchBuilder.Append(' ');
@@ -99,7 +114,7 @@ namespace PSEverything
                 foreach (var item in include)
                 {                    
                     searchBuilder.Append(filterName);
-                    searchBuilder.Append(item);
+                    AddPath(searchBuilder, item);
                     searchBuilder.Append(separator);
                 }                
                 
@@ -110,7 +125,7 @@ namespace PSEverything
                 {
                     searchBuilder.Append(filterName);
                     searchBuilder.Append('!');
-                    searchBuilder.Append(item);
+					AddPath(searchBuilder, item);					
                     searchBuilder.Append(separator);
                 }
             }
@@ -123,11 +138,11 @@ namespace PSEverything
             if (!Global)
             {
                 searchBuilder.Append(" path:");
-                searchBuilder.Append(SessionState.Path.CurrentFileSystemLocation.ProviderPath);
+                AddPath(searchBuilder, SessionState.Path.CurrentFileSystemLocation.ProviderPath);
 				if(!SessionState.Path.CurrentFileSystemLocation.ProviderPath.EndsWith("\\")) {
 					searchBuilder.Append('\\');
-				}
-			}        
+				}	            
+            }        
         }
 
         void AddFileFilter(StringBuilder searchBuilder)
