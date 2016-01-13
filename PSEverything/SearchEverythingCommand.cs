@@ -30,11 +30,11 @@ namespace PSEverything
         [Parameter(ParameterSetName = "default")]        
         public string[] PathExclude { get; set; }
 
-        [Alias("fi")]
+        [Alias("foi")]
         [Parameter(ParameterSetName = "default")]        
         public string[] FolderInclude { get; set; }
 
-        [Alias("fe")]
+        [Alias("foe")]
         [Parameter(ParameterSetName = "default")]        
         public string[] FolderExclude { get; set; }
 
@@ -212,10 +212,11 @@ namespace PSEverything
         }
         protected override void ProcessRecord()
         {
-            
+			Everything.Reset();
             Everything.SetMatchCase(CaseSensitive);
             Everything.SetMatchWholeWord(MatchWholeWord);
             Everything.SetRegEx(!String.IsNullOrEmpty(RegularExpression));            
+			Everything.SortResultsByPath();	        
                         
             ulong skip = PagingParameters.Skip;            
             if (skip > Int32.MaxValue)
@@ -242,6 +243,7 @@ namespace PSEverything
 		        Everything.SetOffset((int)skip);
 	        }
 
+
             var searchPattern = GetSearchString();
             WriteDebug("Search-Everything search pattern:" + searchPattern);
             Everything.SetSearch(searchPattern);
@@ -253,8 +255,7 @@ namespace PSEverything
                 var total = PagingParameters.NewTotalCount((ulong) resCount , 1.0);
                 WriteObject(total);
             }
-            var res = Everything.GetAllResults(resCount);
-            Array.Sort(res);        			
+            var res = Everything.GetAllResults(Math.Min(resCount, (int)first));            	
             WriteObject(res, enumerateCollection:!AsArray);            
         }
     }
