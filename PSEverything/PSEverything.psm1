@@ -143,7 +143,7 @@ begin
         }
         $null = $PSBoundParameters.Remove('Pattern')
         $scriptCmd = { 
-            Select-String @selectStringParams -LiteralPath (& $wrappedCmd @PSBoundParameters) -ErrorAction:SilentlyContinue            
+            Select-String @selectStringParams -LiteralPath (& $wrappedCmd @PSBoundParameters -AsArray) 
         }
         $steppablePipeline = $scriptCmd.GetSteppablePipeline($myInvocation.CommandOrigin)
         $steppablePipeline.Begin($PSCmdlet)
