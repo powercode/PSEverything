@@ -1,27 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
+using static PSEverything.Status;
 
 namespace PSEverything
 {
+
+    public enum Status
+    {
+        Ok = 0,
+        ErrorMemory = 1,
+        ErrorIpc = 2,
+        ErrorRegisterclassex = 3,
+        ErrorCreatewindow = 4,
+        ErrorCreatethread = 5,
+        ErrorInvalidindex = 6,
+        ErrorInvalidcall = 7,
+    }
+
     public static class Everything
     {
-        public const int EVERYTHING_OK = 0;
-        public const int EVERYTHING_ERROR_MEMORY = 1;
-        public const int EVERYTHING_ERROR_IPC = 2;
-        public const int EVERYTHING_ERROR_REGISTERCLASSEX = 3;
-        public const int EVERYTHING_ERROR_CREATEWINDOW = 4;
-        public const int EVERYTHING_ERROR_CREATETHREAD = 5;
-        public const int EVERYTHING_ERROR_INVALIDINDEX = 6;
-        public const int EVERYTHING_ERROR_INVALIDCALL = 7;
-        static bool Is64Bit {
-            get { return Environment.Is64BitProcess; }
-        }
+
+        static bool Is64Bit => Environment.Is64BitProcess;
 
         public static void SetSearch(string text)
         {
             int res = Is64Bit ? NativeMethods64.Everything_SetSearchW(text) : NativeMethods32.Everything_SetSearchW(text);
-            if (res != EVERYTHING_OK)
+            if (res != (int) Ok)
             {
                 Throw(res);
             }
@@ -136,21 +140,21 @@ namespace PSEverything
 
         static void Throw(int errorCode)
         {
-            switch (errorCode)
+            switch ((Status)errorCode)
             {
-                case EVERYTHING_ERROR_MEMORY:
+                case ErrorMemory:
                     throw new Exception("Memory Error");
-                case EVERYTHING_ERROR_REGISTERCLASSEX:
+                case ErrorRegisterclassex:
                     throw new Exception("Class registration error");
-                case EVERYTHING_ERROR_IPC:
+                case ErrorIpc:
                     throw new Exception("IPC error");
-                case EVERYTHING_ERROR_CREATEWINDOW:
+                case ErrorCreatewindow:
                     throw new Exception("create window error");
-                case EVERYTHING_ERROR_CREATETHREAD:
+                case ErrorCreatethread:
                     throw new Exception("Thread creation error");
-                case EVERYTHING_ERROR_INVALIDINDEX:
+                case ErrorInvalidindex:
                     throw new Exception("Invalid index error");
-                case EVERYTHING_ERROR_INVALIDCALL:
+                case ErrorInvalidcall:
                     throw new Exception("Invalid call error");
             }
         }

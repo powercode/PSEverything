@@ -7,7 +7,7 @@ namespace PSEverything
     [Cmdlet(VerbsCommon.Search, "Everything", SupportsPaging = true, DefaultParameterSetName = "default")]
     [OutputType(typeof(string))]
 	[OutputType(typeof(string[]))]
-	[Alias("se")]
+    [Alias("se")]
     public class SearchEverythingCommand : PSCmdlet
     {
         [Parameter(ParameterSetName = "default")]        
@@ -52,8 +52,8 @@ namespace PSEverything
         [ValidateCount(1,2)]
         [Parameter(ParameterSetName = "default")]        
         public string[] Size { get; set; }
-		
-		[Parameter(ParameterSetName = "regex")]
+        
+        [Parameter(ParameterSetName = "regex")]
         public string RegularExpression { get; set; }
         
         [Parameter]
@@ -64,11 +64,11 @@ namespace PSEverything
 
         [Parameter(ParameterSetName = "default")]        
         public SwitchParameter MatchWholeWord { get; set; }
-
+        
 		[Parameter()]
 		public SwitchParameter AsArray { get; set; }
 
-		private string GetSearchString()
+        private string GetSearchString()
         {
             if (ParameterSetName == "regex") { return RegularExpression; }
 
@@ -87,12 +87,27 @@ namespace PSEverything
 
         private void AddPatternFilter(StringBuilder searchBuilder)
         {
-            if (!String.IsNullOrEmpty(Filter))
+            if (!string.IsNullOrEmpty(Filter))
             {
                 searchBuilder.Append(' ');
                 searchBuilder.Append(Filter);
             }
         }
+
+	    private static void AddPath(StringBuilder searchBuilder, string path)
+	    {
+		    if (path.IndexOf(' ') == -1)
+		    {
+			    searchBuilder.Append(path);
+		    }
+		    else
+		    {
+			    searchBuilder.Append('"');
+			    searchBuilder.Append(path);
+				searchBuilder.Append('"');
+			}
+	    }
+
 
         private static void AddListFilter(StringBuilder searchBuilder, string filterName, string[] include, string[] exclude = null, char separator = ' ')
         {
@@ -103,7 +118,7 @@ namespace PSEverything
                 foreach (var item in include)
                 {                    
                     searchBuilder.Append(filterName);
-                    searchBuilder.Append(item);
+                    AddPath(searchBuilder, item);
                     searchBuilder.Append(separator);
                 }                
                 
@@ -114,7 +129,7 @@ namespace PSEverything
                 {
                     searchBuilder.Append(filterName);
                     searchBuilder.Append('!');
-                    searchBuilder.Append(item);
+					AddPath(searchBuilder, item);					
                     searchBuilder.Append(separator);
                 }
             }
@@ -127,9 +142,11 @@ namespace PSEverything
             if (!Global)
             {
                 searchBuilder.Append(" path:");
-                searchBuilder.Append(SessionState.Path.CurrentFileSystemLocation.ProviderPath);
+                AddPath(searchBuilder, SessionState.Path.CurrentFileSystemLocation.ProviderPath);
+				if(!SessionState.Path.CurrentFileSystemLocation.ProviderPath.EndsWith("\\")) {
                 searchBuilder.Append('\\');
             }        
+        }
         }
 
         void AddFileFilter(StringBuilder searchBuilder)
@@ -166,7 +183,7 @@ namespace PSEverything
 
         void AddChildFilter(StringBuilder searchBuilder)
         {
-            if (!String.IsNullOrEmpty(ChildFileName))
+            if (!string.IsNullOrEmpty(ChildFileName))
             {
                 searchBuilder.Append(" child:");
                 searchBuilder.Append(ChildFileName);
@@ -219,7 +236,7 @@ namespace PSEverything
 			Everything.SortResultsByPath();	        
                         
             ulong skip = PagingParameters.Skip;            
-            if (skip > Int32.MaxValue)
+            if (skip > int.MaxValue)
             {
                 ThrowTerminatingError(new ErrorRecord(new ParameterBindingException("Cannot skip that many results"),"SkipToLarge", ErrorCategory.InvalidArgument, skip));
             }            
@@ -228,9 +245,9 @@ namespace PSEverything
 
             if (first == ulong.MaxValue)
             {
-                first = Int32.MaxValue;
+                first = int.MaxValue;
             }
-            if (first > Int32.MaxValue)
+            if (first > int.MaxValue)
             {
                 ThrowTerminatingError(new ErrorRecord(new ParameterBindingException("Cannot take that many results"), "FirstToLarge", ErrorCategory.InvalidArgument, first));
             }
@@ -241,7 +258,7 @@ namespace PSEverything
 	        if (skip > 0)
 	        {
 		        Everything.SetOffset((int)skip);
-	        }
+            }                        
 
 
             var searchPattern = GetSearchString();

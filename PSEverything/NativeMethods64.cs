@@ -6,8 +6,6 @@ namespace PSEverything
 {
     internal class NativeMethods64
     {
-
-
         [DllImport("Everything64.dll", CharSet = CharSet.Unicode)]
         public static extern int Everything_SetSearchW(string lpSearchString);
 
