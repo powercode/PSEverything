@@ -143,21 +143,25 @@ begin
         }
         $null = $PSBoundParameters.Remove('Pattern')
         $scriptCmd = { 
-            $literalPaths = (& $wrappedCmd @PSBoundParameters)
-            if ($litteralPaths){
-                Select-String @selectStringParams -LiteralPath $literalPaths
-            }
-            else{
-                $PSCmdlet.WriteDebug("No matches from Search-Everything $PSBoundParameter")
-            }
+            Select-String @selectStringParams -LiteralPath (& $wrappedCmd @PSBoundParameters) -ErrorAction:SilentlyContinue            
         }
         $steppablePipeline = $scriptCmd.GetSteppablePipeline($myInvocation.CommandOrigin)
         $steppablePipeline.Begin($PSCmdlet)
-    } catch {
+    } 
+    catch [System.Management.Automation.ParameterBindingException]{
+        if($_.FullyQualifiedErrorId -eq 'ParameterArgumentValidationErrorNullNotAllowed,Microsoft.PowerShell.Commands.SelectStringCommand' -and 
+            $_.Exception.ParameterName -eq 'LiteralPath')
+        {
+            $PSCmdlet.WriteDebug("Search-Everything returned empty result set")
+        }
+        else{
+            throw
+        }
+    }
+    catch {
         throw
     }
 }
-
 process
 {
     try {
