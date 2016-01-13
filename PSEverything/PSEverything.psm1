@@ -142,7 +142,15 @@ begin
             }
         }
         $null = $PSBoundParameters.Remove('Pattern')
-        $scriptCmd = { Select-String @selectStringParams -LiteralPath (& $wrappedCmd @PSBoundParameters) }
+        $scriptCmd = { 
+            $literalPaths = (& $wrappedCmd @PSBoundParameters)
+            if ($litteralPaths){
+                Select-String @selectStringParams -LiteralPath $literalPaths
+            }
+            else{
+                $PSCmdlet.WriteDebug("No matches from Search-Everything $PSBoundParameter")
+            }
+        }
         $steppablePipeline = $scriptCmd.GetSteppablePipeline($myInvocation.CommandOrigin)
         $steppablePipeline.Begin($PSCmdlet)
     } catch {
