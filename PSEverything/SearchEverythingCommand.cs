@@ -47,8 +47,7 @@ namespace PSEverything
         [ValidateCount(1, 2)]
         [Parameter(ParameterSetName = "default")]        
         public int[] NameLength { get; set; }
-        
-		[ArgumentCompleter(typeof(EverythingArgumentCompleter))]
+        		
         [ValidateCount(1,2)]
         [Parameter(ParameterSetName = "default")]        
         public string[] Size { get; set; }

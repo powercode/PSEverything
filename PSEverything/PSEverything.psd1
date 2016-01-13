@@ -12,7 +12,7 @@
 RootModule = 'PSEverything.psm1'
 
 # Version number of this module.
-ModuleVersion = '2.0'
+ModuleVersion = '1.3.3'
 
 # ID used to uniquely identify this module
 GUID = 'f262ec02-4a88-49e5-94da-e25aab9cbf7a'
@@ -30,7 +30,7 @@ Copyright = '(c) 2016 sgustafsson. All rights reserved.'
 Description = 'Powershell access to Everything - Blazingly fast file system searches'
 
 # Minimum version of the Windows PowerShell engine required by this module
-PowerShellVersion = '5.0'
+PowerShellVersion = '3.0'
 
 # Name of the Windows PowerShell host required by this module
 # PowerShellHostName = ''
@@ -105,9 +105,6 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
-2.0:
-Implements tabcompletion
-Requires PowerShell 5.0 or greater
 1.3.3:
 Really fixing issue where an error was written in Select-EverythingString when Search-Everything did not return any results        
 1.3.2:

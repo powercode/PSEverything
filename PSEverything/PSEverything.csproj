@@ -43,7 +43,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ArgumentCompleter.cs" />
     <Compile Include="Everything.cs" />
     <Compile Include="NativeMethods32.cs" />
     <Compile Include="NativeMethods64.cs" />
