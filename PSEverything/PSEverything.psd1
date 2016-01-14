@@ -106,7 +106,8 @@ PrivateData = @{
         # ReleaseNotes of this module
         ReleaseNotes = @'
 2.0:
-Implements tabcompletion
+Implements tabcompletion.
+Quoting filter paths
 Requires PowerShell 5.0 or greater
 1.3.3:
 Really fixing issue where an error was written in Select-EverythingString when Search-Everything did not return any results        
