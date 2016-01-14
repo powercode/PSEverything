@@ -148,11 +148,11 @@ begin
         $steppablePipeline = $scriptCmd.GetSteppablePipeline($myInvocation.CommandOrigin)
         $steppablePipeline.Begin($PSCmdlet)
     } 
-    catch [System.Management.Automation.ParameterBindingException]{
-        if($_.FullyQualifiedErrorId -eq 'ParameterArgumentValidationErrorNullNotAllowed,Microsoft.PowerShell.Commands.SelectStringCommand' -and 
-            $_.Exception.ParameterName -eq 'LiteralPath')
+    catch [System.Management.Automation.ParameterBindingException]
+	{
+        if($_.Exception.ParameterName -eq 'LiteralPath')
         {
-            $PSCmdlet.WriteDebug("Search-Everything returned empty result set")
+           $PSCmdlet.WriteDebug("Search-Everything returned empty result set")
         }
         else{
             throw
