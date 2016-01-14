@@ -12,7 +12,7 @@
 RootModule = 'PSEverything.psm1'
 
 # Version number of this module.
-ModuleVersion = '1.3.3'
+ModuleVersion = '1.3.4'
 
 # ID used to uniquely identify this module
 GUID = 'f262ec02-4a88-49e5-94da-e25aab9cbf7a'
@@ -105,6 +105,8 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+1.3.4: 
+Fixing issues with quoting of parameters
 1.3.3:
 Really fixing issue where an error was written in Select-EverythingString when Search-Everything did not return any results        
 1.3.2:
