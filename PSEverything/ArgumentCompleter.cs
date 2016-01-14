@@ -44,7 +44,8 @@ namespace PSEverything
 			"huge",
 			"gigantic"
 		});
-		private string[] SizeConstantToolTips => _sizeConstants ?? (_sizeConstants = new string[]{
+		private string[] _sizeConstantsToolTips;
+		private string[] SizeConstantToolTips => _sizeConstantsToolTips ?? (_sizeConstantsToolTips = new string[]{
 			"empty",
 			"0 KB < size <= 10 KB",
 			"10 KB < size <= 100 KB",
