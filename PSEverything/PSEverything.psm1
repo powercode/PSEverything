@@ -149,8 +149,7 @@ begin
         $steppablePipeline.Begin($PSCmdlet)
     } 
     catch [System.Management.Automation.ParameterBindingException]{
-        if($_.FullyQualifiedErrorId -eq 'ParameterArgumentValidationErrorNullNotAllowed,Microsoft.PowerShell.Commands.SelectStringCommand' -and 
-            $_.Exception.ParameterName -eq 'LiteralPath')
+        if($_.Exception.ParameterName -eq 'LiteralPath')
         {
             $PSCmdlet.WriteDebug("Search-Everything returned empty result set")
         }
