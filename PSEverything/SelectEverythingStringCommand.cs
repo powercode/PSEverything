@@ -1,6 +1,8 @@
 using System.Linq;
 using System.Management.Automation;
 using Microsoft.PowerShell.Commands;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace PSEverything
 {
@@ -9,6 +11,22 @@ namespace PSEverything
     [Alias("sles")]
     public class SelectEverythingStringCommand : PSCmdlet
     {
+        static readonly string[] SearchParamNames = new[]{            
+            "CaseSensitive",
+            "ChildFileName",
+            "Exclude",
+            "Extension",
+            "Filter",
+            "FolderExclude",
+            "FolderInclude",
+            "Global",
+            "Include",
+            "MatchWholeWord",
+            "NameLength",
+            "ParentCount",
+            "PathExclude",
+            "PathInclude",
+            "RegularExpression" };
         [Parameter(Mandatory = true, Position = 1)]
         public string[] Pattern { get; set; }
         [Parameter]
@@ -77,44 +95,36 @@ namespace PSEverything
         [Parameter(ParameterSetName = "default")]
         public SwitchParameter MatchWholeWord { get; set; }
 
-        
+
         protected override void EndProcessing()
         {
-            var searchEverything = new SearchEverythingCommand()
+            var searchParams = new Dictionary<string, object>(SearchParamNames.Length)
             {
-                AsArray = true,
-                CaseSensitive = CaseSensitiveSearch,
-                ChildFileName = ChildFileName,
-                Exclude = Exclude,
-                Extension = Extension,
-                Filter = Filter,
-                FolderExclude = FolderExclude,
-                FolderInclude = FolderExclude,
-                Global = Global,
-                Include = Include,
-                MatchWholeWord = MatchWholeWord,
-                NameLength = NameLength,
-                ParentCount = ParentCount,
-                PathExclude = PathExclude,
-                PathInclude = PathInclude,
-                RegularExpression = RegularExpression,                                                
+                { "AsArray", true }
             };
-            var paths= searchEverything.Invoke<string[]>().FirstOrDefault();
-            var selectStringCommand = new SelectStringCommand()
+            var bound = MyInvocation.BoundParameters;
+            foreach (var sp in SearchParamNames)
             {
-                LiteralPath = paths,
-                Pattern = Pattern,
-                AllMatches = AllMatches,
-                CaseSensitive = CaseSensitivePattern,
-                Context = Context,
-                Encoding = Encoding,
-                List = List,
-                NotMatch = NotMatch,
-                Quiet = Quiet,
-                SimpleMatch = SimpleMatch                
-            };
-            WriteObject(selectStringCommand.Invoke<MatchInfo>(), true);
-                        
+                if (bound.TryGetValue(sp, out object val))
+                {
+                    searchParams.Add(sp, val);
+                    bound.Remove(sp);
+                }
+            }
+
+            var slsParams = bound;
+
+            var ps = PowerShell.Create(RunspaceMode.CurrentRunspace);
+            ps.AddCommand("Search-Everything").AddParameters(searchParams);
+            var paths = ps.Invoke<string[]>().FirstOrDefault();
+            if (paths == null)
+            {
+                return;
+            }
+
+            ps.Commands.Clear();
+            ps.AddCommand("Select-String").AddParameter("LiteralPath", paths).AddParameters(slsParams);
+            WriteObject(ps.Invoke(), true);
         }
     }
 }
