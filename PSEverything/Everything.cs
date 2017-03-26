@@ -89,9 +89,14 @@ namespace PSEverything
         }
 
 
-        public static bool Query(bool wait)
+        public static void Query(bool wait)
         {
-            return Is64Bit ? NativeMethods64.Everything_QueryW(wait) : NativeMethods32.Everything_QueryW(wait);            
+            var res = Is64Bit ? NativeMethods64.Everything_QueryW(wait) : NativeMethods32.Everything_QueryW(wait);            
+            if (!res)
+            {
+                var err = GetLastError();
+                Throw(err);
+            }
         }
 
         public static int GetNumberOfResults()
@@ -124,18 +129,31 @@ namespace PSEverything
             return buf.ToString();
         }
 
+        public static void Cleanup()
+        {
+            if (Is64Bit)
+                NativeMethods64.Everything_Cleanup();
+            else
+                NativeMethods32.Everything_Cleanup();            
+        }
+
         public static string[] GetAllResults(int count)
         {
             var retVal = new string[count];
             var buf = new StringBuilder(260);
-            
-            for (int i = 0; i < count ; ++i)
+
+            for (int i = 0; i < count; ++i)
             {
                 var path = GetFullPathName(i, buf);
                 retVal[i] = path;
                 buf.Clear();
             }
             return retVal;
+        }
+
+        static int GetLastError()
+        {
+            return Is64Bit ? NativeMethods64.Everything_GetLastError() : NativeMethods32.Everything_GetLastError();
         }
 
         static void Throw(int errorCode)

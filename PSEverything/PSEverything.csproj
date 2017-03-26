@@ -30,6 +30,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.PowerShell.Commands.Utility, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.PowerShell.Commands.Utility\v4.0_3.0.0.0__31bf3856ad364e35\Microsoft.PowerShell.Commands.Utility.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -49,6 +53,7 @@
     <Compile Include="NativeMethods64.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SearchEverythingCommand.cs" />
+    <Compile Include="SelectEverythingStringCommand.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="PSEverything.dll-Help.xml">
@@ -62,9 +67,6 @@
     <Content Include="..\LICENSE">
       <Link>LICENSE</Link>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="PSEverything.psm1" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

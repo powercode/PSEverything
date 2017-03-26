@@ -9,10 +9,10 @@
 @{
 
 # Script module or binary module file associated with this manifest.
-RootModule = 'PSEverything.psm1'
+RootModule = 'PSEverything.dll'
 
 # Version number of this module.
-ModuleVersion = '2.0'
+ModuleVersion = '2.1'
 
 # ID used to uniquely identify this module
 GUID = 'f262ec02-4a88-49e5-94da-e25aab9cbf7a'
@@ -30,7 +30,7 @@ Copyright = '(c) 2016 sgustafsson. All rights reserved.'
 Description = 'Powershell access to Everything - Blazingly fast file system searches'
 
 # Minimum version of the Windows PowerShell engine required by this module
-PowerShellVersion = '5.0'
+PowerShellVersion = '5.0.0'
 
 # Name of the Windows PowerShell host required by this module
 # PowerShellHostName = ''
@@ -72,7 +72,7 @@ FunctionsToExport = 'Select-EverythingString'
 CmdletsToExport = 'Search-Everything'
 
 # Variables to export from this module
-VariablesToExport = '*'
+VariablesToExport = ''
 
 # Aliases to export from this module
 AliasesToExport = 'se','sles'
@@ -84,7 +84,7 @@ AliasesToExport = 'se','sles'
 # ModuleList = @()
 
 # List of all files packaged with this module
-FileList = 'Everything32.dll','Everything64.dll','LICENSE','PSEverything.dll','PSEverything.dll-Help.xml','PSEverything.psd1','PSEverything.psm1'
+FileList = 'Everything32.dll','Everything64.dll','LICENSE','PSEverything.dll','PSEverything.dll-Help.xml','PSEverything.psd1'
 
 # Private data to pass to the module specified in RootModule/ModuleToProcess. This may also contain a PSData hashtable with additional module metadata used by PowerShell.
 PrivateData = @{
@@ -105,6 +105,9 @@ PrivateData = @{
 
         # ReleaseNotes of this module
         ReleaseNotes = @'
+2.1: Upgrading to SDK matching 1.4.1.809b  - Fixing hang when calling from Eleveated powershell
+to Everything.
+Now works with both eleveated and non-elevated processes as long as Everything is running as admin.       
 2.0:
 Implements tabcompletion.
 Quoting filter paths

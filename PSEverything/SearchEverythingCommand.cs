@@ -6,67 +6,67 @@ namespace PSEverything
 {
     [Cmdlet(VerbsCommon.Search, "Everything", SupportsPaging = true, DefaultParameterSetName = "default")]
     [OutputType(typeof(string))]
-	[OutputType(typeof(string[]))]
+    [OutputType(typeof(string[]))]
     [Alias("se")]
-    public class SearchEverythingCommand : PSCmdlet
+    public sealed class SearchEverythingCommand : PSCmdlet , IDisposable
     {
-        [Parameter(ParameterSetName = "default")]        
+        [Parameter(ParameterSetName = "default")]
         public string Filter { get; set; }
 
-        [Parameter(ParameterSetName = "default", Position = 1)]        
+        [Parameter(ParameterSetName = "default", Position = 1)]
         public string[] Include { get; set; }
-        
-        [Parameter(ParameterSetName = "default")]        
+
+        [Parameter(ParameterSetName = "default")]
         public string[] Exclude { get; set; }
 
-        [Parameter(ParameterSetName = "default")]        
+        [Parameter(ParameterSetName = "default")]
         public string[] Extension { get; set; }
 
         [Alias("pi")]
-        [Parameter(ParameterSetName = "default")]        
+        [Parameter(ParameterSetName = "default")]
         public string[] PathInclude { get; set; }
 
         [Alias("pe")]
-        [Parameter(ParameterSetName = "default")]        
+        [Parameter(ParameterSetName = "default")]
         public string[] PathExclude { get; set; }
 
         [Alias("foi")]
-        [Parameter(ParameterSetName = "default")]        
+        [Parameter(ParameterSetName = "default")]
         public string[] FolderInclude { get; set; }
 
         [Alias("foe")]
-        [Parameter(ParameterSetName = "default")]        
+        [Parameter(ParameterSetName = "default")]
         public string[] FolderExclude { get; set; }
 
-        [Parameter(ParameterSetName = "default")]        
+        [Parameter(ParameterSetName = "default")]
         public int ParentCount { get; set; }
 
-        [Parameter(ParameterSetName = "default")]        
+        [Parameter(ParameterSetName = "default")]
         public string ChildFileName { get; set; }
-        
+
         [ValidateCount(1, 2)]
-        [Parameter(ParameterSetName = "default")]        
+        [Parameter(ParameterSetName = "default")]
         public int[] NameLength { get; set; }
-        
-		[ArgumentCompleter(typeof(EverythingArgumentCompleter))]
-        [ValidateCount(1,2)]
-        [Parameter(ParameterSetName = "default")]        
+
+        [ArgumentCompleter(typeof(EverythingArgumentCompleter))]
+        [ValidateCount(1, 2)]
+        [Parameter(ParameterSetName = "default")]
         public string[] Size { get; set; }
-        
+
         [Parameter(ParameterSetName = "regex")]
         public string RegularExpression { get; set; }
-        
+
         [Parameter]
         public SwitchParameter CaseSensitive { get; set; }
 
         [Parameter]
         public SwitchParameter Global { get; set; }
 
-        [Parameter(ParameterSetName = "default")]        
+        [Parameter(ParameterSetName = "default")]
         public SwitchParameter MatchWholeWord { get; set; }
-        
-		[Parameter()]
-		public SwitchParameter AsArray { get; set; }
+
+        [Parameter()]
+        public SwitchParameter AsArray { get; set; }
 
         private string GetSearchString()
         {
@@ -76,7 +76,7 @@ namespace PSEverything
             AddPathFilter(sb);
             AddFileFilter(sb);
             AddFolderFilter(sb);
-            AddPatternFilter(sb);                        
+            AddPatternFilter(sb);
             AddParentCountFilter(sb);
             AddExtensionFilter(sb);
             AddChildFilter(sb);
@@ -94,19 +94,19 @@ namespace PSEverything
             }
         }
 
-	    private static void AddPath(StringBuilder searchBuilder, string path)
-	    {
-		    if (path.IndexOf(' ') == -1)
-		    {
-			    searchBuilder.Append(path);
-		    }
-		    else
-		    {
-			    searchBuilder.Append('"');
-			    searchBuilder.Append(path);
-				searchBuilder.Append('"');
-			}
-	    }
+        private static void AddPath(StringBuilder searchBuilder, string path)
+        {
+            if (path.IndexOf(' ') == -1)
+            {
+                searchBuilder.Append(path);
+            }
+            else
+            {
+                searchBuilder.Append('"');
+                searchBuilder.Append(path);
+                searchBuilder.Append('"');
+            }
+        }
 
 
         private static void AddListFilter(StringBuilder searchBuilder, string filterName, string[] include, string[] exclude = null, char separator = ' ')
@@ -114,14 +114,14 @@ namespace PSEverything
             if (include == null && exclude == null) return;
             searchBuilder.Append(' ');
             if (include != null)
-            {                
+            {
                 foreach (var item in include)
-                {                    
+                {
                     searchBuilder.Append(filterName);
                     AddPath(searchBuilder, item);
                     searchBuilder.Append(separator);
-                }                
-                
+                }
+
             }
             if (exclude != null)
             {
@@ -129,13 +129,13 @@ namespace PSEverything
                 {
                     searchBuilder.Append(filterName);
                     searchBuilder.Append('!');
-					AddPath(searchBuilder, item);					
+                    AddPath(searchBuilder, item);
                     searchBuilder.Append(separator);
                 }
             }
             searchBuilder.Length--;
         }
-        
+
         private void AddPathFilter(StringBuilder searchBuilder)
         {
             AddListFilter(searchBuilder, "path:", PathInclude, PathExclude);
@@ -143,15 +143,16 @@ namespace PSEverything
             {
                 searchBuilder.Append(" path:");
                 AddPath(searchBuilder, SessionState.Path.CurrentFileSystemLocation.ProviderPath);
-				if(!SessionState.Path.CurrentFileSystemLocation.ProviderPath.EndsWith("\\")) {
-                searchBuilder.Append('\\');
-            }        
-        }
+                if (!SessionState.Path.CurrentFileSystemLocation.ProviderPath.EndsWith("\\"))
+                {
+                    searchBuilder.Append('\\');
+                }
+            }
         }
 
         void AddFileFilter(StringBuilder searchBuilder)
         {
-            AddListFilter(searchBuilder, "file:", Include,Exclude);
+            AddListFilter(searchBuilder, "file:", Include, Exclude);
         }
 
         void AddFolderFilter(StringBuilder searchBuilder)
@@ -163,9 +164,9 @@ namespace PSEverything
         {
             if (Extension == null) return;
             searchBuilder.Append(" ext:");
-            
+
             foreach (var item in Extension)
-            {                
+            {
                 searchBuilder.Append(item);
                 searchBuilder.Append(";");
             }
@@ -189,7 +190,7 @@ namespace PSEverything
                 searchBuilder.Append(ChildFileName);
             }
         }
-      
+
         void AddSizeFilter(StringBuilder searchBuilder)
         {
             if (Size != null)
@@ -227,19 +228,20 @@ namespace PSEverything
                 }
             }
         }
+
         protected override void ProcessRecord()
         {
-			Everything.Reset();
+            Everything.Reset();
             Everything.SetMatchCase(CaseSensitive);
             Everything.SetMatchWholeWord(MatchWholeWord);
-            Everything.SetRegEx(!String.IsNullOrEmpty(RegularExpression));            
-			Everything.SortResultsByPath();	        
-                        
-            ulong skip = PagingParameters.Skip;            
+            Everything.SetRegEx(!String.IsNullOrEmpty(RegularExpression));
+            Everything.SortResultsByPath();
+
+            ulong skip = PagingParameters.Skip;
             if (skip > int.MaxValue)
             {
-                ThrowTerminatingError(new ErrorRecord(new ParameterBindingException("Cannot skip that many results"),"SkipToLarge", ErrorCategory.InvalidArgument, skip));
-            }            
+                ThrowTerminatingError(new ErrorRecord(new ParameterBindingException("Cannot skip that many results"), "SkipToLarge", ErrorCategory.InvalidArgument, skip));
+            }
 
             ulong first = PagingParameters.First;
 
@@ -251,29 +253,41 @@ namespace PSEverything
             {
                 ThrowTerminatingError(new ErrorRecord(new ParameterBindingException("Cannot take that many results"), "FirstToLarge", ErrorCategory.InvalidArgument, first));
             }
-	        if (first < Int32.MaxValue)
-	        {
-		        Everything.SetMax((int)first);
-	        }
-	        if (skip > 0)
-	        {
-		        Everything.SetOffset((int)skip);
-            }                        
+            if (first < Int32.MaxValue)
+            {
+                Everything.SetMax((int)first);
+            }
+            if (skip > 0)
+            {
+                Everything.SetOffset((int)skip);
+            }
 
 
             var searchPattern = GetSearchString();
             WriteDebug("Search-Everything search pattern:" + searchPattern);
             Everything.SetSearch(searchPattern);
 
-            Everything.Query(true);
-            int resCount = Everything.GetTotalNumberOfResults();
-            if (PagingParameters.IncludeTotalCount)
-            {
-                var total = PagingParameters.NewTotalCount((ulong) resCount , 1.0);
-                WriteObject(total);
+            try { 
+                Everything.Query(true);
+            
+                int resCount = Everything.GetTotalNumberOfResults();
+                if (PagingParameters.IncludeTotalCount)
+                {
+                    var total = PagingParameters.NewTotalCount((ulong)resCount, 1.0);
+                    WriteObject(total);
+                }
+                var res = Everything.GetAllResults(Math.Min(resCount, (int)first));
+                WriteObject(res, enumerateCollection: !AsArray);
             }
-            var res = Everything.GetAllResults(Math.Min(resCount, (int)first));            	
-            WriteObject(res, enumerateCollection:!AsArray);            
+            catch (Exception e)
+            {
+                ThrowTerminatingError(new ErrorRecord(e, e.Message, ErrorCategory.NotSpecified, searchPattern));
+            }
+        }
+
+        void IDisposable.Dispose()
+        {
+            Everything.Cleanup();
         }
     }
 }
