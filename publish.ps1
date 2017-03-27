@@ -1,6 +1,6 @@
-$man = Test-ModuleManifest $PSScriptRoot/PSEverything/PSEverything.psd1
+$man = Import-PowerShellDataFile $PSScriptRoot/PSEverything/PSEverything.psd1
 
-$name = $man.Name
-[string]$version = $man.Version
+$name = 'PSEverything'
+[string]$version = $man.ModuleVersion
 
 Publish-Module -Name $name -RequiredVersion $version -NuGetApiKey $NuGetApiKey -Repository PSGallery
