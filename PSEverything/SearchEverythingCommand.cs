@@ -5,9 +5,9 @@ using System.Text;
 namespace PSEverything
 {
     [Cmdlet(VerbsCommon.Search, "Everything", SupportsPaging = true, DefaultParameterSetName = "default")]
-    [OutputType(typeof(string))]
-    [OutputType(typeof(string[]))]
-    [Alias("se")]
+    [OutputType(new []{typeof(string)})]
+    [OutputType(new[]{typeof(string[])})]
+    [Alias(new[]{"se" })]
     public sealed class SearchEverythingCommand : PSCmdlet , IDisposable
     {
         [Parameter(ParameterSetName = "default")]
@@ -22,19 +22,19 @@ namespace PSEverything
         [Parameter(ParameterSetName = "default")]
         public string[] Extension { get; set; }
 
-        [Alias("pi")]
+        [Alias(new[] {"pi"})]
         [Parameter(ParameterSetName = "default")]
         public string[] PathInclude { get; set; }
 
-        [Alias("pe")]
+        [Alias(new[] {"pe"})]
         [Parameter(ParameterSetName = "default")]
         public string[] PathExclude { get; set; }
 
-        [Alias("foi")]
+        [Alias(new[] {"foi"})]
         [Parameter(ParameterSetName = "default")]
         public string[] FolderInclude { get; set; }
 
-        [Alias("foe")]
+        [Alias(new[] {"foe"})]
         [Parameter(ParameterSetName = "default")]
         public string[] FolderExclude { get; set; }
 

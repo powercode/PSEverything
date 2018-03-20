@@ -1,98 +1,58 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D488ED8A-1B48-40F9-A4C0-4B82C9B8D945}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PSEverything</RootNamespace>
-    <AssemblyName>PSEverything</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Microsoft.PowerShell.Commands.Utility, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Windows\Microsoft.NET\assembly\GAC_MSIL\Microsoft.PowerShell.Commands.Utility\v4.0_3.0.0.0__31bf3856ad364e35\Microsoft.PowerShell.Commands.Utility.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.PowerShell.5.ReferenceAssemblies.1.0.0\lib\net4\System.Management.Automation.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="ArgumentCompleter.cs" />
-    <Compile Include="Everything.cs" />
-    <Compile Include="NativeMethods32.cs" />
-    <Compile Include="NativeMethods64.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SearchEverythingCommand.cs" />
-    <Compile Include="SelectEverythingStringCommand.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="PSEverything.dll-Help.xml">
-      <SubType>Designer</SubType>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="PSEverything.psd1" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\LICENSE">
-      <Link>LICENSE</Link>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="dll\Everything*.dll">
-      <Link>%(Filename)%(Extension)</Link>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
+<Project Sdk="Microsoft.NET.Sdk">
 
-  -->
-  <Target Name="AfterBuild">
-    <ItemGroup>
-      <ModuleFiles Include="$(TargetPath)" />
-      <ModuleFiles Include="@(Content)" />
-    </ItemGroup>
     <PropertyGroup>
-      <ModuleDir>$(TargetDir)\PSEverything</ModuleDir>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <PackageId>PSEverything</PackageId>
+        <Version>3.1.0</Version>
+        <Authors>Powercode</Authors>
+        <Product>PSEverything</Product>
+        <Description>Blazingly fast file searches with voidtools Everything</Description>
+        <PackageLicenseUrl>https://raw.githubusercontent.com/powercode/PSEverything/master/LICENSE</PackageLicenseUrl>
+        <PackageProjectUrl>https://github.com/powercode/PSEverything</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/powercode/PSEverything</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
     </PropertyGroup>
-    <MakeDir Directories="$(ModuleDir)" />
-    <Copy SourceFiles="@(ModuleFiles)" DestinationFolder="$(ModuleDir)" SkipUnchangedFiles="true" />
-  </Target>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+      <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+      <LangVersion>latest</LangVersion>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="PowerShellStandard.Library" Version="5.1.0-preview-01" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="..\LICENSE">
+            <Link>LICENSE</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+        <Content Include="PSEverything.psd1;PSEverything.dll-Help.xml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+    <ItemGroup>
+        <Content Include="dll\Everything*.dll">
+            <Link>%(Filename)%(Extension)</Link>
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </Content>
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="Properties\" />
+    </ItemGroup>
+
+    <Target Name="AfterBuild">
+        <ItemGroup>
+            <ModuleFiles Include="$(TargetPath)" />
+            <ModuleFiles Include="@(Content)" />
+        </ItemGroup>
+        <PropertyGroup>
+            <ModuleDir>$(TargetDir)\PSEverything</ModuleDir>
+        </PropertyGroup>
+        <MakeDir Directories="$(ModuleDir)" />
+        <Copy SourceFiles="@(ModuleFiles)" DestinationFolder="$(ModuleDir)" SkipUnchangedFiles="true" />
+    </Target>
 </Project>

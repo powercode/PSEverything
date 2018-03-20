@@ -78,7 +78,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\PSEverything\PSEverything.csproj">
-      <Project>{d488ed8a-1b48-40f9-a4c0-4b82c9b8d945}</Project>
+      <Project>{da38c5a1-7177-4ecb-af2a-e00d7e7b94c1}</Project>
       <Name>PSEverything</Name>
     </ProjectReference>
   </ItemGroup>

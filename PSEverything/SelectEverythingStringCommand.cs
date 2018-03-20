@@ -8,8 +8,8 @@ using System.Collections.Generic;
 namespace PSEverything
 {
     [Cmdlet(VerbsCommon.Select, "EverythingString", DefaultParameterSetName = "default")]
-    [OutputType("Microsoft.PowerShell.Commands.MatchInfo")]
-    [Alias("sles")]
+    [OutputType(new[]{"Microsoft.PowerShell.Commands.MatchInfo" })]
+    [Alias(new[] {"sles"})]
     public class SelectEverythingStringCommand : PSCmdlet
     {
         static readonly string[] SearchParamNames = new[]{
@@ -49,7 +49,7 @@ namespace PSEverything
         [Parameter]
         public SwitchParameter NotMatch { get; set; }
 
-        [ValidateSet("unicode", "utf7", "utf8", "utf32", "ascii", "bigendianunicode", "default", "oem")]
+        [ValidateSet(new[]{"unicode", "utf7", "utf8", "utf32", "ascii", "bigendianunicode", "default", "oem" })]
         [ValidateNotNullOrEmpty]
         public string Encoding { get; set; }
 
@@ -71,19 +71,19 @@ namespace PSEverything
         public string[] Extension { get; set; }
 
         [Parameter(ParameterSetName = "default")]
-        [Alias("pi")]
+        [Alias(new[] {"pi"})]
         public string[] PathInclude { get; set; }
 
         [Parameter(ParameterSetName = "default")]
-        [Alias("pe")]
+        [Alias(new[] {"pe"})]
         public string[] PathExclude { get; set; }
 
         [Parameter(ParameterSetName = "default")]
-        [Alias("fi")]
+        [Alias(new[] {"fi"})]
         public string[] FolderInclude { get; set; }
 
         [Parameter(ParameterSetName = "default")]
-        [Alias("fe")]
+        [Alias(new[] {"fe"})]
         public string[] FolderExclude { get; set; }
 
         [Parameter(ParameterSetName = "default")]
