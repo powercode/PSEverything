@@ -12,7 +12,7 @@
     RootModule = 'PSEverything.dll'
 
     # Version number of this module.
-    ModuleVersion = '2.2.2'
+    ModuleVersion = '2.3.0'
 
     # ID used to uniquely identify this module
     GUID = 'f262ec02-4a88-49e5-94da-e25aab9cbf7a'
@@ -32,37 +32,9 @@
     # Minimum version of the Windows PowerShell engine required by this module
     PowerShellVersion = '5.0.0'
 
-    # Name of the Windows PowerShell host required by this module
-    # PowerShellHostName = ''
-
-    # Minimum version of the Windows PowerShell host required by this module
-    # PowerShellHostVersion = ''
-
     # Minimum version of Microsoft .NET Framework required by this module
     DotNetFrameworkVersion = '4.5'
 
-    # Minimum version of the common language runtime (CLR) required by this module
-    # CLRVersion = ''
-
-    # Processor architecture (None, X86, Amd64) required by this module
-    # ProcessorArchitecture = ''
-
-    # Modules that must be imported into the global environment prior to importing this module
-    # RequiredModules = @()
-
-    # Assemblies that must be loaded prior to importing this module
-    # RequiredAssemblies = @()
-
-    # Script files (.ps1) that are run in the caller's environment prior to importing this module.
-    # ScriptsToProcess = @()
-
-    # Type files (.ps1xml) to be loaded when importing this module
-    # TypesToProcess = @()
-
-    # Format files (.ps1xml) to be loaded when importing this module
-    # FormatsToProcess = @()
-
-    # Modules to import as nested modules of the module specified in RootModule/ModuleToProcess    
 
     # Functions to export from this module
     FunctionsToExport = ''
@@ -75,12 +47,6 @@
 
     # Aliases to export from this module
     AliasesToExport = 'se', 'sles'
-
-    # DSC resources to export from this module
-    # DscResourcesToExport = @()
-
-    # List of all modules packaged with this module
-    # ModuleList = @()
 
     # List of all files packaged with this module
     FileList = 'Everything32.dll', 'Everything64.dll', 'LICENSE', 'PSEverything.dll', 'PSEverything.dll-Help.xml', 'PSEverything.psd1'
@@ -99,22 +65,20 @@
             # A URL to the main website for this project.
             ProjectUri = 'https://github.com/powercode/PSEverything'
 
-            # A URL to an icon representing this module.
-            # IconUri = ''
-
             # ReleaseNotes of this module
             ReleaseNotes = @'
+2.3: Bug fixes. Sorted output.
 2.1: Upgrading to SDK matching 1.4.1.809b  - Fixing hang when calling from Eleveated powershell
 to Everything.
-Now works with both eleveated and non-elevated processes as long as Everything is running as admin.       
+Now works with both eleveated and non-elevated processes as long as Everything is running as admin.
 2.0:
 Implements tabcompletion.
 Quoting filter paths
 Requires PowerShell 5.0 or greater
 1.3.3:
-Really fixing issue where an error was written in Select-EverythingString when Search-Everything did not return any results        
+Really fixing issue where an error was written in Select-EverythingString when Search-Everything did not return any results
 1.3.2:
-Fixing issue where an error was written in Select-EverythingString when Search-Everything did not return any results         
+Fixing issue where an error was written in Select-EverythingString when Search-Everything did not return any results
 1.3.1:
 Bug fix for -Filter that didn't work in combination with non-global searches.
 '@
@@ -122,12 +86,5 @@ Bug fix for -Filter that didn't work in combination with non-global searches.
         } # End of PSData hashtable
 
     } # End of PrivateData hashtable
-
-    # HelpInfo URI of this module
-    # HelpInfoURI = ''
-
-    # Default prefix for commands exported from this module. Override the default prefix using Import-Module -Prefix.
-    # DefaultCommandPrefix = ''
-
 }
 

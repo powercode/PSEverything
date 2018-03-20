@@ -48,7 +48,7 @@ namespace PSEverything
 
         [DllImport(Everything64Dll)]
         public static extern string Everything_GetSearchW();
-       
+
         [DllImport(Everything64Dll)]
         public static extern int Everything_GetLastError();
 
@@ -92,6 +92,6 @@ namespace PSEverything
         public static extern void Everything_Reset();
 
         [DllImport(Everything64Dll)]
-        public static extern void Everything_Cleanup ();
+        public static extern void Everything_CleanUp ();
     }
 }

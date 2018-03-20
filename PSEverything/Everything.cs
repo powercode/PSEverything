@@ -36,8 +36,8 @@ namespace PSEverything
             if (Is64Bit)
                 NativeMethods64.Everything_SetRegex(value);
             else
-                NativeMethods32.Everything_SetRegex(value);            
-            
+                NativeMethods32.Everything_SetRegex(value);
+
         }
 
         public static void SetMatchCase(bool value)
@@ -91,7 +91,7 @@ namespace PSEverything
 
         public static void Query(bool wait)
         {
-            var res = Is64Bit ? NativeMethods64.Everything_QueryW(wait) : NativeMethods32.Everything_QueryW(wait);            
+            var res = Is64Bit ? NativeMethods64.Everything_QueryW(wait) : NativeMethods32.Everything_QueryW(wait);
             if (!res)
             {
                 var err = GetLastError();
@@ -125,16 +125,16 @@ namespace PSEverything
                 NativeMethods64.Everything_GetResultFullPathNameW(index, buf, buf.Capacity);
             else
                 NativeMethods32.Everything_GetResultFullPathNameW(index, buf, buf.Capacity);
-            
+
             return buf.ToString();
         }
 
         public static void Cleanup()
         {
             if (Is64Bit)
-                NativeMethods64.Everything_Cleanup();
+                NativeMethods64.Everything_CleanUp();
             else
-                NativeMethods32.Everything_Cleanup();            
+                NativeMethods32.Everything_CleanUp();
         }
 
         public static string[] GetAllResults(int count)

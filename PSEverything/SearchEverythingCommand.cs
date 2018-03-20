@@ -235,7 +235,6 @@ namespace PSEverything
             Everything.SetMatchCase(CaseSensitive);
             Everything.SetMatchWholeWord(MatchWholeWord);
             Everything.SetRegEx(!String.IsNullOrEmpty(RegularExpression));
-            Everything.SortResultsByPath();
 
             ulong skip = PagingParameters.Skip;
             if (skip > int.MaxValue)
@@ -267,9 +266,9 @@ namespace PSEverything
             WriteDebug("Search-Everything search pattern:" + searchPattern);
             Everything.SetSearch(searchPattern);
 
-            try { 
+            try {
                 Everything.Query(true);
-            
+                Everything.SortResultsByPath();
                 int resCount = Everything.GetTotalNumberOfResults();
                 if (PagingParameters.IncludeTotalCount)
                 {

@@ -92,6 +92,6 @@ namespace PSEverything
         public static extern void Everything_Reset();
 
         [DllImport(Everything32Dll)]
-        public static extern void Everything_Cleanup();
+        public static extern void Everything_CleanUp();
     }
 }
