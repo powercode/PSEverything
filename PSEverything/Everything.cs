@@ -140,7 +140,7 @@ namespace PSEverything
         public static string[] GetAllResults(int count)
         {
             var retVal = new string[count];
-            var buf = new StringBuilder(260);
+            var buf = new StringBuilder(32767);
 
             for (int i = 0; i < count; ++i)
             {
