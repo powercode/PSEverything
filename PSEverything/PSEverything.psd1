@@ -1,7 +1,7 @@
 
 @{
     RootModule = 'PSEverything.dll'
-    ModuleVersion = '3.1.0'
+    ModuleVersion = '3.2.0'
     GUID = 'f262ec02-4a88-49e5-94da-e25aab9cbf7a'
     Author = 'Staffan Gustafsson'
     CompanyName = 'PowerCode Consulting AB'
