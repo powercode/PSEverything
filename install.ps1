@@ -10,15 +10,7 @@ $man = Import-PowerShellDataFile $PSScriptRoot/PSEverything/PSEverything.psd1
 $name = 'PSEverything'
 [string]$version = $man.ModuleVersion
 
-
-$vspath = (Get-VSSetupInstance -All | Sort-Object InstallationVersion -Descending -top 1).InstallationPath
-
-$msbuild = "$vspath\Msbuild\Current\Bin\MSBuild.exe"
 [string] $sln = Resolve-Path "$PSScriptRoot\$Name.sln"
-
-if ($msbuild -eq $Null) {
-    throw "Cannot find msbuild.exe"
-}
 
 $msbuildArgs = @("/p:Configuration=$Configuration")
 if ($Rebuild) {
