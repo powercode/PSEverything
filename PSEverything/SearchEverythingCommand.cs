@@ -167,7 +167,8 @@ namespace PSEverything
 
             foreach (var item in Extension)
             {
-                searchBuilder.Append(item);
+                var ext = item.StartsWith(".") ? item.Substring(1) : item;                    
+                searchBuilder.Append(ext);
                 searchBuilder.Append(";");
             }
             searchBuilder.Length--;
