@@ -2,14 +2,15 @@
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using PSEverything;
-using Xunit;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace PSEverythingTests
 {
 
+    [TestClass]
     public class SelectEverythingTests
     {
-        [Fact]
+        [TestMethod]
         public void TestSelectEverythingString()
         {
             var iss = InitialSessionState.CreateDefault2();
@@ -23,7 +24,7 @@ namespace PSEverythingTests
 
 
                 var res = ps.Invoke();
-                Assert.True(res.Count > 0);
+                Assert.IsTrue(res.Count > 0);
             }
         }
     }
