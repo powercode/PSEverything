@@ -10,8 +10,10 @@ $man = Import-PowerShellDataFile $PSScriptRoot/PSEverything/PSEverything.psd1
 $name = 'PSEverything'
 [string]$version = $man.ModuleVersion
 
-$vspath = Get-ItemPropertyValue HKLM:\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\SxS\VS7\ -Name 15.0
-$msbuild = "$vspath\MSBuild\15.0\Bin\MSBuild.exe"
+
+$vspath = (Get-VSSetupInstance -All | Sort-Object InstallationVersion -Descending -top 1).InstallationPath
+
+$msbuild = "$vspath\Msbuild\Current\Bin\MSBuild.exe"
 [string] $sln = Resolve-Path "$PSScriptRoot\$Name.sln"
 
 if ($msbuild -eq $Null) {
@@ -27,7 +29,8 @@ else {
 }
 $msbuildArgs += $sln
 "$msbuildArgs"
-& $msbuild  $msbuildArgs
+dotnet build -c $Configuration  $msbuildArgs
+dotnet test
 
 
 $moduleSourceDir = "$PSScriptRoot/PSEverything/bin/$Configuration/netstandard2.0/"
@@ -56,3 +59,5 @@ $cert = Get-ChildItem cert:\CurrentUser\My -CodeSigningCert
 if ($cert) {
     Get-ChildItem $moduleDir/*.ps?1, $moduleDir/*.dll | Set-AuthenticodeSignature -Certificate $cert -TimestampServer http://timestamp.verisign.com/scripts/timstamp.dll
 }
+
+Get-Item $ModuleDir
