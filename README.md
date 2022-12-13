@@ -13,12 +13,12 @@ Install-Module PSEverything
 
 Then you can so things like
 ```powershell
-Search-Everything -Extension cpp,h -FilePattern Bytes | Get-Item
+Search-Everything -Extension cpp,h -Global -Filter Bytes | Get-Item
 ```
-That almost instantly finds all cpp and h files with Bytes in it's name on all NTFS drives.
+That almost instantly finds all cpp and h files with Bytes in it's name on all (-Global) NTFS drives.
 
 On my system,
 ```powershell
-Search-Everything -ext h
+Search-Everything -Extension h -Global
 ```
 returned 61082 '.h' files in 344 ms.
