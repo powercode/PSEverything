@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using static PSEverything.Status;
+using System.IO;
 
 namespace PSEverything
 {
@@ -25,7 +26,7 @@ namespace PSEverything
         public static void SetSearch(string text)
         {
             int res = Is64Bit ? NativeMethods64.Everything_SetSearchW(text) : NativeMethods32.Everything_SetSearchW(text);
-            if (res != (int) Ok)
+            if (res != (int)Ok)
             {
                 Throw(res);
             }
@@ -128,6 +129,15 @@ namespace PSEverything
 
             return buf.ToString();
         }
+        public static bool GetIsFolderResult(int index)
+        {
+            return Is64Bit ? NativeMethods64.Everything_IsFolderResult(nIndex: index) : NativeMethods32.Everything_IsFolderResult(nIndex: index);
+        }
+
+        public static bool GetIsFileResult(int index)
+        {
+            return Is64Bit ? NativeMethods64.Everything_IsFileResult(nIndex: index) : NativeMethods32.Everything_IsFileResult(nIndex: index);
+        }
 
         public static void Cleanup()
         {
@@ -146,6 +156,22 @@ namespace PSEverything
             {
                 var path = GetFullPathName(i, buf);
                 retVal[i] = path;
+                buf.Clear();
+            }
+            return retVal;
+        }
+
+        public static FileSystemInfo[] GetAllResultsAsFileSystemInfo(int count)
+        {
+            FileSystemInfo[] retVal = new FileSystemInfo[count];
+            StringBuilder buf = new(32767);
+
+            for (int i = 0; i < count; ++i)
+            {
+                string path = GetFullPathName(i, buf);
+                retVal[i] = GetIsFileResult(i) ? (FileSystemInfo)new FileInfo(path)
+                            : GetIsFolderResult(i) ? new DirectoryInfo(path)
+                            : null;
                 buf.Clear();
             }
             return retVal;

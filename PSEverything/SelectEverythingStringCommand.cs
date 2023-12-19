@@ -8,8 +8,7 @@ using System.Collections.Generic;
 namespace PSEverything
 {
     [Cmdlet(VerbsCommon.Select, "EverythingString", DefaultParameterSetName = "default")]
-    [OutputType(new[]{"Microsoft.PowerShell.Commands.MatchInfo" })]
-    [Alias(new[] {"sles"})]
+    [OutputType(new[] { "Microsoft.PowerShell.Commands.MatchInfo" })]
     public class SelectEverythingStringCommand : PSCmdlet
     {
         static readonly string[] SearchParamNames = new[]{
@@ -49,7 +48,7 @@ namespace PSEverything
         [Parameter]
         public SwitchParameter NotMatch { get; set; }
 
-        [ValidateSet(new[]{"unicode", "utf7", "utf8", "utf32", "ascii", "bigendianunicode", "default", "oem" })]
+        [ValidateSet(new[] { "unicode", "utf7", "utf8", "utf32", "ascii", "bigendianunicode", "default", "oem" })]
         [ValidateNotNullOrEmpty]
         public string Encoding { get; set; }
 
@@ -71,19 +70,19 @@ namespace PSEverything
         public string[] Extension { get; set; }
 
         [Parameter(ParameterSetName = "default")]
-        [Alias(new[] {"pi"})]
+        [Alias(new[] { "pi" })]
         public string[] PathInclude { get; set; }
 
         [Parameter(ParameterSetName = "default")]
-        [Alias(new[] {"pe"})]
+        [Alias(new[] { "pe" })]
         public string[] PathExclude { get; set; }
 
         [Parameter(ParameterSetName = "default")]
-        [Alias(new[] {"fi"})]
+        [Alias(new[] { "fi" })]
         public string[] FolderInclude { get; set; }
 
         [Parameter(ParameterSetName = "default")]
-        [Alias(new[] {"fe"})]
+        [Alias(new[] { "fe" })]
         public string[] FolderExclude { get; set; }
 
         [Parameter(ParameterSetName = "default")]
@@ -124,7 +123,7 @@ namespace PSEverything
             {
                 if (bound.TryGetValue(sp, out object val))
                 {
-                    searchParams.Add(sp == nameof(CaseSensitiveSearch) ? "CaseSenitive" : sp, val);
+                    searchParams.Add(sp == nameof(CaseSensitiveSearch) ? "CaseSensitive" : sp, val);
                     bound.Remove(sp);
                 }
             }
@@ -135,7 +134,8 @@ namespace PSEverything
                 bound.Remove(nameof(CaseSensitivePattern));
             }
             var slsParams = bound;
-            using (_powershell = PowerShell.Create(RunspaceMode.CurrentRunspace)) {
+            using (_powershell = PowerShell.Create(RunspaceMode.CurrentRunspace))
+            {
                 _powershell.AddCommand("Search-Everything").AddParameters(searchParams);
                 var paths = _powershell.Invoke<string[]>().First();
                 if (_powershell.HadErrors)

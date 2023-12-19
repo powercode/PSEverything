@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Management.Automation;
 using System.Text;
+using System.IO;
 
 namespace PSEverything
 {
     [Cmdlet(VerbsCommon.Search, "Everything", SupportsPaging = true, DefaultParameterSetName = "default")]
-    [OutputType(new []{typeof(string)})]
-    [OutputType(new[]{typeof(string[])})]
-    [Alias(new[]{"se" })]
-    public sealed class SearchEverythingCommand : PSCmdlet , IDisposable
+    [OutputType(new Type[] { typeof(string) })]
+    [OutputType(new Type[] { typeof(string[]) })]
+    [OutputType(new Type[] { typeof(FileSystemInfo) })]
+    [OutputType(new Type[] { typeof(FileSystemInfo[]) })]
+    public sealed class SearchEverythingCommand : PSCmdlet, IDisposable
     {
         [Parameter(ParameterSetName = "default")]
         public string Filter { get; set; }
@@ -22,19 +24,19 @@ namespace PSEverything
         [Parameter(ParameterSetName = "default")]
         public string[] Extension { get; set; }
 
-        [Alias(new[] {"pi"})]
+        [Alias(new[] { "pi" })]
         [Parameter(ParameterSetName = "default")]
         public string[] PathInclude { get; set; }
 
-        [Alias(new[] {"pe"})]
+        [Alias(new[] { "pe" })]
         [Parameter(ParameterSetName = "default")]
         public string[] PathExclude { get; set; }
 
-        [Alias(new[] {"foi"})]
+        [Alias(new[] { "foi" })]
         [Parameter(ParameterSetName = "default")]
         public string[] FolderInclude { get; set; }
 
-        [Alias(new[] {"foe"})]
+        [Alias(new[] { "foe" })]
         [Parameter(ParameterSetName = "default")]
         public string[] FolderExclude { get; set; }
 
@@ -67,6 +69,10 @@ namespace PSEverything
 
         [Parameter()]
         public SwitchParameter AsArray { get; set; }
+
+        [Alias(["AsFS"])]
+        [Parameter()]
+        public SwitchParameter AsObject { get; set; }
 
         private string GetSearchString()
         {
@@ -167,7 +173,7 @@ namespace PSEverything
 
             foreach (var item in Extension)
             {
-                var ext = item.StartsWith(".") ? item.Substring(1) : item;                    
+                var ext = item.StartsWith(".") ? item.Substring(1) : item;
                 searchBuilder.Append(ext);
                 searchBuilder.Append(";");
             }
@@ -267,7 +273,8 @@ namespace PSEverything
             WriteDebug("Search-Everything search pattern:" + searchPattern);
             Everything.SetSearch(searchPattern);
 
-            try {
+            try
+            {
                 Everything.Query(true);
                 Everything.SortResultsByPath();
                 int resCount = Everything.GetTotalNumberOfResults();
@@ -276,8 +283,16 @@ namespace PSEverything
                     var total = PagingParameters.NewTotalCount((ulong)resCount, 1.0);
                     WriteObject(total);
                 }
-                var res = Everything.GetAllResults(Math.Min(resCount, (int)first));
-                WriteObject(res, enumerateCollection: !AsArray);
+                if (AsObject)
+                {
+                    FileSystemInfo[] res = Everything.GetAllResultsAsFileSystemInfo(Math.Min(resCount, (int)first));
+                    WriteObject(res, enumerateCollection: !AsArray);
+                }
+                else
+                {
+                    var res = Everything.GetAllResults(Math.Min(resCount, (int)first));
+                    WriteObject(res, enumerateCollection: !AsArray);
+                }
             }
             catch (Exception e)
             {
