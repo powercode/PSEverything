@@ -14,13 +14,14 @@ namespace PSEverythingTests
         public void TestSelectEverythingString()
         {
             var iss = InitialSessionState.CreateDefault2();
-            iss.ImportPSModule(new []{(typeof(SelectEverythingStringCommand).Assembly.Location)});
+            iss.ImportPSModule(new[] { (typeof(SelectEverythingStringCommand).Assembly.Location) });
             using (var ps = PowerShell.Create(iss))
             {
                 ps.Commands.AddCommand("Select-EverythingString")
-                  .AddParameter("-Extension", "ps1")
+                  .AddParameter("-Extension", "psd1")
                   .AddParameter("-Global", true)
-                  .AddParameter("-Pattern", "function (\\S+)");
+                  .AddParameter("-Pattern", "RootModule")
+                  .AddParameter("-Exclude", "$env:SystemRoot");
 
 
                 var res = ps.Invoke();
